@@ -1,0 +1,44 @@
+
+# Supported projects
+# (Python WoL script + typical Python tooling outputs)
+
+# Python cache / bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env/
+.env/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Packaging / build artifacts
+build/
+dist/
+*.egg-info/
+*.egg/
+
+# Type checker / linter caches
+.mypy_cache/
+.ruff_cache/
+.pyre/
+
+# Tox / Nox
+.tox/
+.nox/
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
