@@ -13,6 +13,14 @@ if ROOT_DIR not in sys.path:
 import main as wol_main
 
 
+if sys.version_info[0] >= 3:
+    from io import StringIO
+else:
+    # Python 2 `io.StringIO` expects unicode text; `StringIO.StringIO` is
+    # byte-friendly and matches what `main.py` prints under Python 2.
+    from StringIO import StringIO
+
+
 class FakeSocket(object):
     def __init__(self, *args, **kwargs):
         self.options = []
@@ -86,11 +94,6 @@ class TestSendWoLPacket(unittest.TestCase):
         wol_main.socket.socket = self._orig_socket_ctor
 
     def test_send_wol_packet_success(self):
-        try:
-            from io import StringIO
-        except ImportError:
-            from StringIO import StringIO
-
         old_stdout = sys.stdout
         sys.stdout = StringIO()
         mac = "c8:54:4b:41:40:1a"
@@ -117,11 +120,6 @@ class TestSendWoLPacket(unittest.TestCase):
             sys.stdout = old_stdout
 
     def test_send_wol_packet_invalid_mac_returns_false(self):
-        try:
-            from io import StringIO
-        except ImportError:
-            from StringIO import StringIO
-
         old_stdout = sys.stdout
         sys.stdout = StringIO()
         try:
@@ -149,11 +147,6 @@ class TestMain(unittest.TestCase):
 
     def test_main_uses_provided_macs_and_flags(self):
         # Silence stdout during tests.
-        try:
-            from io import StringIO
-        except ImportError:
-            from StringIO import StringIO
-
         old_stdout = sys.stdout
         sys.stdout = StringIO()
         try:
@@ -179,11 +172,6 @@ class TestMain(unittest.TestCase):
         )
 
     def test_main_defaults_when_no_macs_given(self):
-        try:
-            from io import StringIO
-        except ImportError:
-            from StringIO import StringIO
-
         old_stdout = sys.stdout
         sys.stdout = StringIO()
         try:
