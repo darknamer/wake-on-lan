@@ -60,4 +60,4 @@ In CI it will:
 - Execute unit tests via `python -m unittest discover -s tests -p "test_*.py"`
 - Execute coverage via `python tests/run_coverage.py` (requires the `coverage` package)
 
-The workflow tests Python versions `3.9` through `3.12`.
+The workflow tests Python `2.7` (via a `python:2.7` Docker container) and Python versions `3.9` through `3.12`.
