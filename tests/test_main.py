@@ -13,12 +13,19 @@ if ROOT_DIR not in sys.path:
 import main as wol_main
 
 
-if sys.version_info[0] >= 3:
-    from io import StringIO
-else:
-    # Python 2 `io.StringIO` expects unicode text; `StringIO.StringIO` is
-    # byte-friendly and matches what `main.py` prints under Python 2.
-    from StringIO import StringIO
+class _SilenceStdout(object):
+    """File-like stdout for tests; accepts str and unicode (Python 2.7 safe).
+
+    `io.StringIO` under Python 2 only accepts unicode, while
+    `from __future__ import print_function` still passes byte `str` to
+    `write()`, which raises TypeError. A no-op writer avoids that.
+    """
+
+    def write(self, data):
+        pass
+
+    def flush(self):
+        pass
 
 
 class FakeSocket(object):
@@ -95,7 +102,7 @@ class TestSendWoLPacket(unittest.TestCase):
 
     def test_send_wol_packet_success(self):
         old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        sys.stdout = _SilenceStdout()
         mac = "c8:54:4b:41:40:1a"
         broadcast_ip = "192.168.0.255"
         port = 7
@@ -121,7 +128,7 @@ class TestSendWoLPacket(unittest.TestCase):
 
     def test_send_wol_packet_invalid_mac_returns_false(self):
         old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        sys.stdout = _SilenceStdout()
         try:
             ok = wol_main.send_wol_packet("invalid-mac", broadcast_ip="192.168.0.255", port=9)
             self.assertFalse(ok)
@@ -148,7 +155,7 @@ class TestMain(unittest.TestCase):
     def test_main_uses_provided_macs_and_flags(self):
         # Silence stdout during tests.
         old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        sys.stdout = _SilenceStdout()
         try:
             wol_main.main(
                 argv=[
@@ -173,7 +180,7 @@ class TestMain(unittest.TestCase):
 
     def test_main_defaults_when_no_macs_given(self):
         old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        sys.stdout = _SilenceStdout()
         try:
             wol_main.main(argv=[])
         finally:
